@@ -1,28 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="ml">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Total Care Solution</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOTAL CARE TECH</title>
 <style>
-body{font-family:Arial;text-align:center;background:#f5f5f5;margin:0;padding:20px}
-.header{background:#0d6efd;color:white;padding:20px;border-radius:10px}
-.card{background:white;padding:20px;margin:15px 0;border-radius:10px;box-shadow:0 2px 5px #ccc}
-.btn{background:#0d6efd;color:white;padding:12px 20px;border:none;border-radius:8px;width:100%;font-size:16px}
+*{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#f1f3f9}
+.header{background:#0f1e3d;color:white;padding:12px;display:flex;gap:10px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px;background:white;position:sticky;top:0}
+.tab{padding:8px 14px;border-radius:20px;border:1px solid #ddd;background:#f8f8f8;white-space:nowrap}
+.tab.active{background:#0f1e3d;color:white}
+.card-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
+.stat{background:white;border-radius:10px;padding:10px;border-top:4px solid orange}
+.section{background:white;margin:10px;border-radius:12px;padding:12px}
+.qbtn{border:1px solid #ddd;border-radius:10px;padding:10px;background:#fafbff}
+input,select,textarea{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px}
+.btn{padding:12px;border-radius:8px;border:none;width:100%;background:#0f1e3d;color:white}
+.hidden{display:none}
 </style>
 </head>
 <body>
-<div class="header">
-<h2>Total Care Solution</h2>
-<p>Electrical & Home Services - Calicut</p>
+<div class="header"><div style="background:white;color:#ff6a00;font-weight:900;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px">TC</div><div><b>TOTAL CARE TECH</b><br><small>Electrical & Plumbing Solutions<br>സെന്റർ • വയറിംഗ് • ബില്ലിംഗ്</small></div></div>
+<div class="tabs">
+<button class="tab active" onclick="show('dash')">ഡാഷ്ബോർഡ്</button>
+<button class="tab" onclick="show('centers')">സെന്ററുകൾ</button>
+<button class="tab" onclick="show('works')">വരവ്/ചെലവ്</button>
+<button class="tab" onclick="show('bills')">ബില്ലുകൾ</button>
+<button class="tab" onclick="show('backup')">ബാക്കപ്പ്</button>
 </div>
-<div class="card">
-<h3>Our Services</h3>
-<p>🔌 Electrical Works<br>🔧 Plumbing<br>❄️ AC Service<br>🏠 Home Care</p>
+<div id="dash"><div class="card-row"><div class="stat"><small>ആകെ സെന്ററുകൾ</small><h2 id="c1">0</h2></div><div class="stat"><small>ആകെ വരവ്</small><h2 id="c2">₹0</h2></div><div class="stat"><small>ആകെ ചെലവ്</small><h2 id="c3">₹0</h2></div><div class="stat"><small>ബാക്കി</small><h2 id="c4">₹0</h2></div></div>
+<div class="section"><h3>വേഗത്തിൽ ചേർക്കാം</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="qbtn" onclick="show('centers')">+ പുതിയ സെന്റ്<br><small>കസ്റ്റമർ, സൈറ്റ്</small></div><div class="qbtn" onclick="show('works')">+ വരവ് / ചെലവ്<br><small>പണം രേഖപ്പെടുത്തുക</small></div><div class="qbtn" onclick="show('bills')">+ പുതിയ ബിൽ<br><small>ബിൽ തയ്യാറാക്കുക</small></div><div class="qbtn" onclick="show('backup')">+ ബാക്കപ്പ്<br><small>ഡാറ്റ സൂക്ഷിക്കുക</small></div></div></div>
+<div class="section"><small>ശ്രദ്ധിക്കുക: ഈ ഡാറ്റ ഈ ഫോണിൽ മാത്രമാണ് സൂക്ഷിക്കുന്നത്. ബാക്കപ്പ് എടുക്കുക.</small></div>
 </div>
-<div class="card">
-<h3>Contact Us</h3>
-<p>📞 Call: 9961606684<br>📍 Malappuram Aripra, Kerala</p>
-<button class="btn" onclick="alert('Call 9961606684')">Call Now</button>
-</div>
+<div id="centers" class="hidden"><div class="section"><h3>സെന്ററുകൾ</h3><div id="clist"></div><input id="cn" placeholder="പേര്"><input id="cp" placeholder="ഫോൺ 9961606684"><input id="cplace" placeholder="സ്ഥലം"><button class="btn" onclick="addCenter()">Save</button></div></div>
+<div id="works" class="hidden"><div class="section"><h3>വരവ്/ചെലവ്</h3><div id="wlist"></div><select id="wt"><option value="income">വരവ്</option><option value="expense">ചെലവ്</option></select><select id="wc"></select><input id="wa" type="number" placeholder="തുക ₹"><input id="wd" placeholder="വിവരണം"><input id="wdate" type="date"><button class="btn" onclick="addWork()">Save</button></div></div>
+<div id="bills" class="hidden"><div class="section"><h3>ബില്ലുകൾ</h3><div id="blist"></div><select id="bc"></select><textarea id="bi" placeholder="Wiring - 2000
+Material - 1500"></textarea><input id="bt" type="number" placeholder="Total ₹"><button class="btn" onclick="addBill()">Save & Print</button></div></div>
+<div id="backup" class="hidden"><div class="section"><h3>ബാക്കപ്പ്</h3><button class="btn" onclick="exp()">📥 Backup Download</button><br><br><input type="file" id="imp"><button class="btn" style="background:white;color:#0f1e3d;border:1px solid #0f1e3d" onclick="impd()">📤 Restore</button></div></div>
+<script>
+let db=JSON.parse(localStorage.getItem('tct')||'{"c":[],"w":[],"b":[]}');
+function save(){localStorage.setItem('tct',JSON.stringify(db));render();}
+function show(id){document.querySelectorAll('#dash,#centers,#works,#bills,#backup').forEach(e=>e.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');render();}
+function render(){
+document.getElementById('c1').innerText=db.c.length;
+let inc=db.w.filter(x=>x.t=='income').reduce((s,x)=>s+Number(x.a),0);
+let ex=db.w.filter(x=>x.t=='expense').reduce((s,x)=>s+Number(x.a),0);
+document.getElementById('c2').innerText='₹'+inc;document.getElementById('c3').innerText='₹'+ex;document.getElementById('c4').innerText='₹'+(inc-ex);
+document.getElementById('clist').innerHTML=db.c.map((x,i)=>`<div style="border-bottom:1px solid #eee;padding:8px 0"><b>${x.n}</b> - ${x.p} <button onclick="delc(${i})">❌</button></div>`).join('')||'ഇല്ല';
+document.getElementById('wlist').innerHTML=db.w.map((x,i)=>`<div style="border-bottom:1px solid #eee;padding:6px 0">${x.c} - ${x.d} ₹${x.a} <small>${x.t}</small></div>`).join('')||'ഇല്ല';
+document.getElementById('blist').innerHTML=db.b.map((x,i)=>`<div style="border-bottom:1px solid #eee;padding:6px 0"><b>${x.c}</b> ₹${x.t}<br><small>${x.i.slice(0,30)}</small> <button onclick="printb(${i})">🖨️</button></div>`).join('')||'ഇല്ല';
+let opt=db.c.map(x=>`<option>${x.n}</option>`).join('');document.getElementById('wc').innerHTML=opt;document.getElementById('bc').innerHTML=opt;
+}
+function addCenter(){if(!cn.value)return alert('പേര്');db.c.push({n:cn.value,p:cp.value,pl:cplace.value});save();cn.value='';cp.value='';}
+function addWork(){db.w.push({t:wt.value,c:wc.value,a:wa.value,d:wd.value,date:wdate.value});save();}
+function addBill(){let tot=bt.value||0;if(!tot){let s=0;bi.value.split('\n').forEach(l=>{let m=l.match(/(\d+)\s*$/);if(m)s+=Number(m[1]);});tot=s;}db.b.push({c:bc.value,i:bi.value,t:tot,date:new Date().toLocaleDateString()});save();printb(db.b.length-1);}
+function printb(i){let b=db.b[i];let w=window.open('','_blank');w.document.write(`<h2>TOTAL CARE TECH</h2><p>9961606684</p><hr><h3>${b.c}</h3><pre>${b.i}</pre><h2>Total ₹${b.t}</h2><script>window.print()<\/script>`);w.document.close();}
+function delc(i){db.c.splice(i,1);save();}
+function exp(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db)]));a.download='backup.json';a.click();}
+function impd(){let f=document.getElementById('imp').files[0];let r=new FileReader();r.onload=e=>{db=JSON.parse(e.target.result);save();};r.readAsText(f);}
+render();
+</script>
 </body>
 </html>
