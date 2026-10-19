@@ -19,7 +19,7 @@ body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
 .app-header h2 { margin: 0; font-size: 18px; letter-spacing: 0.5px; }
 .app-header p { margin: 3px 0 0; font-size: 11px; opacity: 0.8; }
 
-/* Grid Dashboard Style like SherAcc ERP */
+/* Dashboard Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -34,7 +34,7 @@ body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
   text-align: center;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,7 +45,6 @@ body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
 .tile-icon { font-size: 28px; margin-bottom: 6px; }
 .tile-title { font-size: 13px; font-weight: bold; text-transform: uppercase; }
 
-/* Color Themes based on Image */
 .tile-daily { background: linear-gradient(135deg, #11998e, #38ef7d); }
 .tile-sub { background: linear-gradient(135deg, #f2994a, #f2c94c); }
 .tile-cust { background: linear-gradient(135deg, #00c6ff, #0072ff); }
@@ -53,7 +52,6 @@ body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
 .tile-bill { background: linear-gradient(135deg, #8e2de2, #4a00e0); }
 .tile-fin { background: linear-gradient(135deg, #11998e, #38ef7d); }
 
-/* Main Section Display Area */
 .content-area { padding: 0 15px; }
 .card {
   background: #fff;
@@ -76,10 +74,9 @@ body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
   align-items: center;
 }
 
-/* Inputs & Buttons */
 .input {
   width: 100%;
-  padding: 11px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
   margin-bottom: 10px;
@@ -113,6 +110,14 @@ body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
 .bill-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
 .bill-table th, .bill-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
 .bill-table th { background: #203a43; color: #fff; }
+
+.edit-box {
+  background: #f0f7ff;
+  border: 1px solid #0072ff;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 8px;
+}
 </style>
 </head>
 <body>
@@ -122,7 +127,7 @@ body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
   <p>ERP COMPLETE MANAGEMENT SOFTWARE</p>
 </div>
 
-<!-- ERP MAIN GRID MENU -->
+<!-- DASHBOARD GRID MENU -->
 <div class="dashboard-grid">
   <div class="tile tile-daily" onclick="openModule('mod_daily')">
     <div class="tile-icon">📝</div>
@@ -161,6 +166,7 @@ body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
     
     <input id="d_cust" class="input" placeholder="Customer Name *">
     <input id="d_phone" type="tel" class="input" placeholder="Phone Number">
+    <input id="d_addr" class="input" placeholder="Customer Address">
     <input id="d_work" class="input" placeholder="Work Details *">
     <input id="d_coll" type="number" class="input" placeholder="Collection Received Rs">
 
@@ -184,6 +190,8 @@ body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
   <div id="mod_sub" class="card">
     <div class="card-title">🤝 Sub Contract Register</div>
     <input id="s_cust" class="input" placeholder="Customer Name *">
+    <input id="s_phone" type="tel" class="input" placeholder="Phone Number">
+    <input id="s_addr" class="input" placeholder="Customer Address">
     <input id="s_cont" class="input" placeholder="Main Contractor *">
     <input id="s_work" class="input" placeholder="Work Details *">
     <input id="s_total" type="number" class="input" placeholder="Total Contract Amount Rs *">
@@ -194,9 +202,9 @@ body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
     <div id="subList"></div>
   </div>
 
-  <!-- CUSTOMER MODULE -->
+  <!-- CUSTOMER LEDGER MODULE -->
   <div id="mod_cust" class="card">
-    <div class="card-title">👤 Customer Ledger & Invoice</div>
+    <div class="card-title">👤 Customer Ledger & Profile</div>
     <div id="customerList"></div>
   </div>
 
@@ -230,6 +238,7 @@ var DB = JSON.parse(localStorage.getItem('SR_ERP_DB')) || {
 };
 
 var selectedWorkers = {};
+var editingCustomer = null;
 
 function saveData() {
   localStorage.setItem('SR_ERP_DB', JSON.stringify(DB));
@@ -257,15 +266,22 @@ function toggleWorker(name) {
   if(selectedWorkers[name]) {
     delete selectedWorkers[name];
   } else {
-    selectedWorkers[name] = { rate: 800, extra: 0 };
+    selectedWorkers[name] = { mode: 'daily', rate: 800, hours: 0, hourlyRate: 100, extra: 0 };
   }
   renderChecks();
   renderWageInputs();
 }
 
+function setWageMode(name, mode) {
+  if(selectedWorkers[name]) {
+    selectedWorkers[name].mode = mode;
+    renderWageInputs();
+  }
+}
+
 function updateWage(name, field, val) {
   if(selectedWorkers[name]) {
-    selectedWorkers[name][field] = parseInt(val || 0);
+    selectedWorkers[name][field] = parseFloat(val || 0);
   }
 }
 
@@ -285,11 +301,22 @@ function renderWageInputs() {
   if(!container) return;
   container.innerHTML = '';
   for(var w in selectedWorkers) {
+    var data = selectedWorkers[w];
+    var isHourly = data.mode === 'hourly';
+
     container.innerHTML += '<div style="background:#f0f8ff;border:1px solid #b8daff;padding:8px;border-radius:6px;margin-bottom:8px;font-size:12px">'
       + '<b>👷 ' + w + '</b>'
+      + '<div style="margin:4px 0">'
+      + '<label><input type="radio" name="mode_' + w + '" ' + (!isHourly ? 'checked' : '') + ' onchange="setWageMode(\'' + w + '\',\'daily\')"> Daily Wage</label> &nbsp; '
+      + '<label><input type="radio" name="mode_' + w + '" ' + (isHourly ? 'checked' : '') + ' onchange="setWageMode(\'' + w + '\',\'hourly\')"> Hourly Wage</label>'
+      + '</div>'
       + '<div style="display:flex;gap:5px;margin-top:4px">'
-      + '<input type="number" placeholder="Daily Wage" value="' + selectedWorkers[w].rate + '" oninput="updateWage(\'' + w + '\',\'rate\',this.value)" class="input" style="margin:0;padding:6px">'
-      + '<input type="number" placeholder="OT/Extra" value="' + selectedWorkers[w].extra + '" oninput="updateWage(\'' + w + '\',\'extra\',this.value)" class="input" style="margin:0;padding:6px">'
+      + (!isHourly 
+          ? '<input type="number" placeholder="Daily Rate" value="' + data.rate + '" oninput="updateWage(\'' + w + '\',\'rate\',this.value)" class="input" style="margin:0;padding:6px">' 
+          : '<input type="number" placeholder="Hours" value="' + data.hours + '" oninput="updateWage(\'' + w + '\',\'hours\',this.value)" class="input" style="margin:0;padding:6px">'
+            + '<input type="number" placeholder="Rate/Hr" value="' + data.hourlyRate + '" oninput="updateWage(\'' + w + '\',\'hourlyRate\',this.value)" class="input" style="margin:0;padding:6px">'
+        )
+      + '<input type="number" placeholder="OT/Extra" value="' + data.extra + '" oninput="updateWage(\'' + w + '\',\'extra\',this.value)" class="input" style="margin:0;padding:6px">'
       + '</div>'
       + '</div>';
   }
@@ -298,6 +325,7 @@ function renderWageInputs() {
 function saveDailyWork() {
   var c = document.getElementById('d_cust').value.trim();
   var p = document.getElementById('d_phone').value.trim();
+  var a = document.getElementById('d_addr').value.trim();
   var w = document.getElementById('d_work').value.trim();
   var coll = parseInt(document.getElementById('d_coll').value || 0);
 
@@ -309,7 +337,8 @@ function saveDailyWork() {
   var workerListText = [];
   for(var k=0; k<wKeys.length; k++) {
     var name = wKeys[k];
-    var earn = selectedWorkers[name].rate + selectedWorkers[name].extra;
+    var data = selectedWorkers[name];
+    var earn = (data.mode === 'hourly') ? (data.hours * data.hourlyRate) + data.extra : data.rate + data.extra;
     totalWage += earn;
     workerListText.push(name + ' (Rs ' + earn + ')');
   }
@@ -324,11 +353,16 @@ function saveDailyWork() {
     date: new Date().toLocaleDateString() 
   });
   
-  if(!DB.customers[c]) DB.customers[c] = { phone: p };
-  else if(p) DB.customers[c].phone = p;
+  if(!DB.customers[c]) {
+    DB.customers[c] = { phone: p, address: a };
+  } else {
+    if(p) DB.customers[c].phone = p;
+    if(a) DB.customers[c].address = a;
+  }
 
   document.getElementById('d_cust').value = '';
   document.getElementById('d_phone').value = '';
+  document.getElementById('d_addr').value = '';
   document.getElementById('d_work').value = '';
   document.getElementById('d_coll').value = '';
   selectedWorkers = {};
@@ -340,6 +374,8 @@ function saveDailyWork() {
 
 function saveSubContract() {
   var c = document.getElementById('s_cust').value.trim();
+  var p = document.getElementById('s_phone').value.trim();
+  var a = document.getElementById('s_addr').value.trim();
   var cont = document.getElementById('s_cont').value.trim();
   var w = document.getElementById('s_work').value.trim();
   var total = parseInt(document.getElementById('s_total').value || 0);
@@ -348,9 +384,17 @@ function saveSubContract() {
   if(!c || !cont || !w || total <= 0) return alert('All fields required!');
 
   DB.sub.unshift({ id: Date.now(), cust: c, contractor: cont, work: w, total: total, coll: coll, date: new Date().toLocaleDateString() });
-  if(!DB.customers[c]) DB.customers[c] = { phone: '' };
+  
+  if(!DB.customers[c]) {
+    DB.customers[c] = { phone: p, address: a };
+  } else {
+    if(p) DB.customers[c].phone = p;
+    if(a) DB.customers[c].address = a;
+  }
 
   document.getElementById('s_cust').value = '';
+  document.getElementById('s_phone').value = '';
+  document.getElementById('s_addr').value = '';
   document.getElementById('s_cont').value = '';
   document.getElementById('s_work').value = '';
   document.getElementById('s_total').value = '';
@@ -359,6 +403,43 @@ function saveSubContract() {
   saveData();
   renderAll();
   alert('Sub Contract Saved!');
+}
+
+function startEditCustomer(cname) {
+  editingCustomer = cname;
+  renderAll();
+}
+
+function cancelEditCustomer() {
+  editingCustomer = null;
+  renderAll();
+}
+
+function saveCustomerProfile(oldName) {
+  var newName = document.getElementById('edit_c_name').value.trim();
+  var newPhone = document.getElementById('edit_c_phone').value.trim();
+  var newAddr = document.getElementById('edit_c_addr').value.trim();
+
+  if(!newName) return alert('Customer Name cannot be empty');
+
+  var oldData = DB.customers[oldName] || {};
+
+  if(oldName !== newName) {
+    delete DB.customers[oldName];
+    // Update reference in daily and sub
+    for(var i=0; i<DB.daily.length; i++) { if(DB.daily[i].cust === oldName) DB.daily[i].cust = newName; }
+    for(var j=0; j<DB.sub.length; j++) { if(DB.sub[j].cust === oldName) DB.sub[j].cust = newName; }
+  }
+
+  DB.customers[newName] = {
+    phone: newPhone,
+    address: newAddr
+  };
+
+  editingCustomer = null;
+  saveData();
+  renderAll();
+  alert('Customer Profile Updated!');
 }
 
 function generateBill(cname) {
@@ -370,6 +451,7 @@ function generateBill(cname) {
     + '<div style="margin:10px 0;font-size:12px">'
     + '<b>Customer:</b> ' + cname + '<br>'
     + '<b>Phone:</b> ' + (info.phone || 'N/A') + '<br>'
+    + '<b>Address:</b> ' + (info.address || 'N/A') + '<br>'
     + '<b>Date:</b> ' + new Date().toLocaleDateString()
     + '</div>'
     + '<table class="bill-table">'
@@ -431,7 +513,7 @@ function renderAll() {
     }
   }
 
-  // Customer List
+  // Customer List & Edit
   var cList = document.getElementById('customerList');
   if(cList) {
     cList.innerHTML = '';
@@ -439,10 +521,34 @@ function renderAll() {
     if(keys.length === 0) cList.innerHTML = '<p style="font-size:12px;color:#777">No customers available</p>';
     for(var k=0; k<keys.length; k++) {
       var name = keys[k];
-      cList.innerHTML += '<div style="border:1px solid #ddd;padding:10px;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">'
-        + '<div><b>👤 ' + name + '</b></div>'
-        + '<button onclick="generateBill(\'' + name + '\')" style="background:#0072ff;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer">🖨️ Print Bill</button>'
-        + '</div>';
+      var info = DB.customers[name] || {};
+
+      if(editingCustomer === name) {
+        cList.innerHTML += '<div class="edit-box">'
+          + '<b>Edit Profile: ' + name + '</b>'
+          + '<input id="edit_c_name" class="input" style="margin-top:6px" value="' + name + '" placeholder="Customer Name">'
+          + '<input id="edit_c_phone" class="input" value="' + (info.phone || '') + '" placeholder="Phone Number">'
+          + '<input id="edit_c_addr" class="input" value="' + (info.address || '') + '" placeholder="Address">'
+          + '<div style="display:flex;gap:5px">'
+          + '<button onclick="saveCustomerProfile(\'' + name + '\')" style="background:#0072ff;color:#fff;border:none;padding:8px;border-radius:6px;font-size:12px;width:50%">Save</button>'
+          + '<button onclick="cancelEditCustomer()" style="background:#777;color:#fff;border:none;padding:8px;border-radius:6px;font-size:12px;width:50%">Cancel</button>'
+          + '</div>'
+          + '</div>';
+      } else {
+        cList.innerHTML += '<div style="border:1px solid #ddd;padding:10px;border-radius:8px;margin-bottom:8px">'
+          + '<div style="display:flex;justify-content:space-between;align-items:flex-start">'
+          + '<div>'
+          + '<b>👤 ' + name + '</b><br>'
+          + '<small style="color:#555">📞 Phone: ' + (info.phone || 'N/A') + '</small><br>'
+          + '<small style="color:#555">🏠 Addr: ' + (info.address || 'N/A') + '</small>'
+          + '</div>'
+          + '<div style="display:flex;flex-direction:column;gap:5px">'
+          + '<button onclick="generateBill(\'' + name + '\')" style="background:#0072ff;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:11px;cursor:pointer">🖨️ Print Bill</button>'
+          + '<button onclick="startEditCustomer(\'' + name + '\')" style="background:#203a43;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:11px;cursor:pointer">✏️ Edit Profile</button>'
+          + '</div>'
+          + '</div>'
+          + '</div>';
+      }
     }
   }
 
