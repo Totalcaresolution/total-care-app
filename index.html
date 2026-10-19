@@ -1,84 +1,473 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOTAL CARE TECH</title>
+<title>SR Electricals & Plumbing - ERP Layout</title>
 <style>
-*{box-sizing:border-box;font-family:system-ui,Arial}
-body{margin:0;background:#f1f3f9;color:#1a1a1a}
-.header{background:#0f1e3d;color:white;padding:12px 14px;display:flex;gap:12px;align-items:center;position:sticky;top:0;z-index:20}
-.header img{width:56px;height:56px;border-radius:12px;background:white;padding:3px;object-fit:contain}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px;background:white;position:sticky;top:80px;z-index:15;border-bottom:1px solid #eee}
-.tab{padding:9px 16px;border-radius:22px;border:1px solid #ddd;background:#f6f6f6;white-space:nowrap;font-size:13px;font-weight:600}
-.tab.active{background:#0f1e3d;color:white;border-color:#0f1e3d}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
-.stat{background:white;border-radius:12px;padding:12px;border-top:4px solid #ff7a00;box-shadow:0 2px 6px rgba(0,0,0,.07)}
-.stat b{font-size:22px}
-.card{background:white;margin:10px;border-radius:14px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
-.btn{width:100%;padding:13px;border-radius:10px;border:none;background:#0f1e3d;color:white;font-weight:700;font-size:15px}
-input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:10px;font-size:14px}
-.q{border:1px solid #eee;border-radius:12px;padding:12px;background:#fafcff}
-.hidden{display:none}
-.small{font-size:12px;color:#666}
+* { box-sizing: border-box; font-family: Arial, sans-serif; }
+body { margin: 0; background: #eef2f5; padding-bottom: 20px; }
+
+/* Header Style */
+.app-header {
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #fff;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.app-header h2 { margin: 0; font-size: 18px; letter-spacing: 0.5px; }
+.app-header p { margin: 3px 0 0; font-size: 11px; opacity: 0.8; }
+
+/* Grid Dashboard Style like SherAcc ERP */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 15px;
+}
+
+.tile {
+  border-radius: 12px;
+  padding: 18px 10px;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.tile:active { transform: scale(0.96); }
+
+.tile-icon { font-size: 28px; margin-bottom: 6px; }
+.tile-title { font-size: 13px; font-weight: bold; text-transform: uppercase; }
+
+/* Color Themes based on Image */
+.tile-daily { background: linear-gradient(135deg, #11998e, #38ef7d); }
+.tile-sub { background: linear-gradient(135deg, #f2994a, #f2c94c); }
+.tile-cust { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+.tile-work { background: linear-gradient(135deg, #eb3349, #f45c43); }
+.tile-bill { background: linear-gradient(135deg, #8e2de2, #4a00e0); }
+.tile-fin { background: linear-gradient(135deg, #11998e, #38ef7d); }
+
+/* Main Section Display Area */
+.content-area { padding: 0 15px; }
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  display: none;
+}
+.card.active { display: block; }
+.card-title {
+  font-size: 16px;
+  font-weight: bold;
+  border-bottom: 2px solid #203a43;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  color: #203a43;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Inputs & Buttons */
+.input {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  outline: none;
+}
+.input:focus { border-color: #0072ff; }
+
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  background: #203a43;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.worker-chip {
+  display: inline-block;
+  background: #eef2f5;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin: 3px;
+  font-size: 12px;
+}
+
+.bill-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+.bill-table th, .bill-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+.bill-table th { background: #203a43; color: #fff; }
 </style>
 </head>
 <body>
-<div class="header">
-<img src="logo.png">
-<div><b style="font-size:17px">TOTAL CARE TECH</b><br><small>Electrical & Plumbing Solutions<br>📞 9961606684</small></div>
+
+<div class="app-header">
+  <h2>SR ELECTRICAL & PLUMBING</h2>
+  <p>ERP COMPLETE MANAGEMENT SOFTWARE</p>
 </div>
-<div class="tabs">
-<button class="tab active" onclick="show('dash',this)">ഡാഷ്ബോർഡ്</button>
-<button class="tab" onclick="show('centers',this)">സെന്ററുകൾ</button>
-<button class="tab" onclick="show('works',this)">വരവ്/ചെലവ്</button>
-<button class="tab" onclick="show('bills',this)">ബില്ലുകൾ</button>
-<button class="tab" onclick="show('backup',this)">ബാക്കപ്പ്</button>
+
+<!-- ERP MAIN GRID MENU -->
+<div class="dashboard-grid">
+  <div class="tile tile-daily" onclick="openModule('mod_daily')">
+    <div class="tile-icon">📝</div>
+    <div class="tile-title">Daily Work</div>
+  </div>
+  <div class="tile tile-sub" onclick="openModule('mod_sub')">
+    <div class="tile-icon">🤝</div>
+    <div class="tile-title">Sub Contract</div>
+  </div>
+  <div class="tile tile-cust" onclick="openModule('mod_cust')">
+    <div class="tile-icon">👤</div>
+    <div class="tile-title">Customer Ledger</div>
+  </div>
+  <div class="tile tile-work" onclick="openModule('mod_work')">
+    <div class="tile-icon">👷</div>
+    <div class="tile-title">Worker Manager</div>
+  </div>
+  <div class="tile tile-bill" onclick="openModule('mod_cust')">
+    <div class="tile-icon">🖨️</div>
+    <div class="tile-title">Print Invoice</div>
+  </div>
+  <div class="tile tile-fin" onclick="openModule('mod_fin')">
+    <div class="tile-icon">💰</div>
+    <div class="tile-title">Accounts / Fin</div>
+  </div>
 </div>
-<div id="dash">
-<div class="row">
-<div class="stat"><div class="small">ആകെ സെന്ററുകൾ</div><b id="c1">0</b></div>
-<div class="stat" style="border-color:#00b86c"><div class="small">ആകെ വരവ്</div><b id="c2">₹0</b></div>
-<div class="stat" style="border-color:#1a73e8"><div class="small">ആകെ ചെലവ്</div><b id="c3">₹0</b></div>
-<div class="stat" style="border-color:#c49a00"><div class="small">ബാക്കി</div><b id="c4">₹0</b></div>
+
+<div class="content-area">
+
+  <!-- DAILY WORK MODULE -->
+  <div id="mod_daily" class="card active">
+    <div class="card-title">
+      <span>📝 Daily Work Entry</span>
+      <small style="font-size:10px;color:#666">Entry Form</small>
+    </div>
+    
+    <input id="d_cust" class="input" placeholder="Customer Name *">
+    <input id="d_phone" type="tel" class="input" placeholder="Phone Number">
+    <input id="d_work" class="input" placeholder="Work Details *">
+    <input id="d_coll" type="number" class="input" placeholder="Collection Received Rs">
+
+    <div style="background:#f9f9f9;border:1px solid #ddd;border-radius:8px;padding:10px;margin-bottom:10px">
+      <p style="margin:0 0 8px;font-weight:bold;font-size:12px">Select Workers (Tick ✅)</p>
+      <div id="workerChecks"></div>
+      <div style="display:flex;gap:5px;margin-top:8px">
+        <input id="new_w_name" class="input" style="margin:0" placeholder="Add New Worker">
+        <button onclick="addWorkerFromDaily()" style="padding:0 15px;background:#000;color:#fff;border-radius:6px;border:none;font-size:12px">+ Add</button>
+      </div>
+    </div>
+
+    <div id="wageRows"></div>
+    <button onclick="saveDailyWork()" class="btn-submit">Save Work Entry</button>
+
+    <h4 style="margin:15px 0 5px;font-size:13px">Recent Daily Entries</h4>
+    <div id="dailyList"></div>
+  </div>
+
+  <!-- SUB CONTRACT MODULE -->
+  <div id="mod_sub" class="card">
+    <div class="card-title">🤝 Sub Contract Register</div>
+    <input id="s_cust" class="input" placeholder="Customer Name *">
+    <input id="s_cont" class="input" placeholder="Main Contractor *">
+    <input id="s_work" class="input" placeholder="Work Details *">
+    <input id="s_total" type="number" class="input" placeholder="Total Contract Amount Rs *">
+    <input id="s_coll" type="number" class="input" placeholder="Collection Received Rs">
+    <button onclick="saveSubContract()" class="btn-submit" style="background:#f2994a">Save Sub Contract</button>
+    
+    <h4 style="margin:15px 0 5px;font-size:13px">Sub Contract Records</h4>
+    <div id="subList"></div>
+  </div>
+
+  <!-- CUSTOMER MODULE -->
+  <div id="mod_cust" class="card">
+    <div class="card-title">👤 Customer Ledger & Invoice</div>
+    <div id="customerList"></div>
+  </div>
+
+  <!-- WORKER MODULE -->
+  <div id="mod_work" class="card">
+    <div class="card-title">👷 Workers Master</div>
+    <div id="workerMasterList"></div>
+  </div>
+
+  <!-- FINANCE MODULE -->
+  <div id="mod_fin" class="card">
+    <div class="card-title">💰 Financial Accounts Summary</div>
+    <div id="finSummary" style="font-size:14px;line-height:1.8"></div>
+  </div>
+
+  <!-- INVOICE BILL VIEW -->
+  <div id="mod_bill" class="card">
+    <button onclick="openModule('mod_cust')" style="background:#000;color:#fff;border:none;padding:6px 12px;border-radius:6px;margin-bottom:10px;font-size:12px">⬅ Back to Customers</button>
+    <div id="billPrintArea"></div>
+    <button onclick="window.print()" class="btn-submit" style="background:#0072ff;margin-top:15px">🖨️ Print / Download PDF</button>
+  </div>
+
 </div>
-<div class="card"><h3>വേഗത്തിൽ ചേർക്കാം</h3>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-<div class="q" onclick="show('centers',null)"><b>➕ പുതിയ സെന്റ്</b><br><small>കസ്റ്റമർ, സൈറ്റ്</small></div>
-<div class="q" onclick="show('works',null)"><b>💰 വരവ് / ചെലവ്</b><br><small>പണം രേഖപ്പെടുത്തുക</small></div>
-<div class="q" onclick="show('bills',null)"><b>🧾 പുതിയ ബിൽ</b><br><small>ബിൽ തയ്യാറാക്കുക</small></div>
-<div class="q" onclick="show('backup',null)"><b>💾 ബാക്കപ്പ്</b><br><small>ഡാറ്റ സൂക്ഷിക്കുക</small></div>
-</div></div>
-</div>
-<div id="centers" class="hidden"><div class="card"><h3>സെന്ററുകൾ</h3><div id="clist"></div><input id="cn" placeholder="പേര് / സൈറ്റ് പേര്"><input id="cp" placeholder="ഫോൺ"><input id="cplace" placeholder="സ്ഥലം"><button class="btn" onclick="addCenter()">Save ചെയ്യുക</button></div></div>
-<div id="works" class="hidden"><div class="card"><h3>വരവ് / ചെലവ്</h3><div id="wlist"></div><select id="wt"><option value="income">വരവ് 💰</option><option value="expense">ചെലവ് 💸</option></select><select id="wc"></select><input id="wa" type="number" placeholder="തുക ₹"><input id="wd" placeholder="വിവരണം - Wiring Labour"><input id="wdate" type="date"><button class="btn" onclick="addWork()">Save</button></div></div>
-<div id="bills" class="hidden"><div class="card"><h3>ബില്ലുകൾ</h3><div id="blist"></div><select id="bc"></select><textarea id="bi" rows="5" placeholder="Wiring - 2000"></textarea><input id="bt" type="number" placeholder="Total ₹"><button class="btn" onclick="addBill()">Save & Print Bill</button></div></div>
-<div id="backup" class="hidden"><div class="card"><h3>ബാക്കപ്പ് / Restore</h3><button class="btn" onclick="exp()">📥 Backup Download</button><br><br><input type="file" id="impf"><button class="btn" style="background:white;color:#0f1e3d;border:1px solid #0f1e3d;margin-top:8px" onclick="imp()">📤 Restore ചെയ്യുക</button></div></div>
+
 <script>
-let db=JSON.parse(localStorage.getItem('tct_v5')||'{"c":[],"w":[],"b":[]}');
-function save(){localStorage.setItem('tct_v5',JSON.stringify(db));render();}
-function show(id,el){document.querySelectorAll('#dash,#centers,#works,#bills,#backup').forEach(e=>e.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');if(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}render();}
-function render(){
-document.getElementById('c1').innerText=db.c.length;
-let inc=db.w.filter(x=>x.t=='income').reduce((s,x)=>s+Number(x.a||0),0);
-let ex=db.w.filter(x=>x.t=='expense').reduce((s,x)=>s+Number(x.a||0),0);
-document.getElementById('c2').innerText='₹'+inc;document.getElementById('c3').innerText='₹'+ex;document.getElementById('c4').innerText='₹'+(inc-ex);
-document.getElementById('clist').innerHTML=db.c.map((x,i)=>`<div style="border-bottom:1px solid #eee;padding:10px 0;display:flex;justify-content:space-between"><div><b>${x.n}</b><br><small>${x.p} - ${x.pl}</small></div><button onclick="delc(${i})">❌</button></div>`).join('')||'<small>സെന്റർ ഇല്ല</small>';
-document.getElementById('wlist').innerHTML=db.w.map((x,i)=>`<div style="border-bottom:1px solid #eee;padding:8px 0"><b>${x.c}</b> - ${x.d} - ₹${x.a} <small>(${x.t})</small><button style="float:right" onclick="delw(${i})">❌</button></div>`).join('')||'<small>എൻട്രി ഇല്ല</small>';
-document.getElementById('blist').innerHTML=db.b.map((x,i)=>`<div style="border-bottom:1px solid #eee;padding:10px 0"><b>${x.c}</b> - ₹${x.t}<br><small>${x.i.substring(0,60)}</small><div style="margin-top:8px;display:flex;gap:6px"><button onclick="printb(${i})" style="flex:1;padding:8px;border-radius:8px;border:1px solid #ddd">🖨️ Print</button><button onclick="shareB(${i})" style="flex:1;padding:8px;border-radius:8px;border:none;background:#25D366;color:white">📱 WhatsApp</button><button onclick="delb(${i})" style="padding:8px">❌</button></div></div>`).join('')||'<small>ബിൽ ഇല്ല</small>';
-let opt=db.c.map(x=>`<option>${x.n}</option>`).join('');document.getElementById('wc').innerHTML=opt;document.getElementById('bc').innerHTML=opt;
+var DB = JSON.parse(localStorage.getItem('SR_ERP_DB')) || {
+  daily: [],
+  sub: [],
+  workers: ["Raju", "Babu", "Sivan"],
+  customers: {}
+};
+
+var selectedWorkers = {};
+
+function saveData() {
+  localStorage.setItem('SR_ERP_DB', JSON.stringify(DB));
 }
-function addCenter(){if(!cn.value)return alert('പേര് നൽകുക');db.c.push({n:cn.value,p:cp.value,pl:cplace.value});save();cn.value='';cp.value='';cplace.value='';alert('Saved!');}
-function addWork(){if(!wa.value)return alert('തുക');db.w.push({t:wt.value,c:wc.value,a:wa.value,d:wd.value,date:wdate.value||new Date().toLocaleDateString()});save();wa.value='';wd.value='';alert('Saved!');}
-function addBill(){let tot=bt.value;if(!tot){let s=0;bi.value.split('\n').forEach(l=>{let m=l.match(/(\d+)\s*$/);if(m)s+=Number(m[1]);});tot=s;}if(!tot)return alert('Total ഇല്ല');db.b.push({c:bc.value,i:bi.value,t:tot,date:new Date().toLocaleDateString()});save();printb(db.b.length-1);}
-function printb(i){let b=db.b[i];let w=window.open('','_blank');w.document.write(`<html><head><title>Bill</title></head><body style="font-family:Arial;padding:24px;max-width:600px;margin:auto"><div style="text-align:center;border-bottom:3px solid #0f1e3d;padding-bottom:16px"><img src="logo.png" style="width:140px"><h2 style="margin:8px 0 0;color:#0f1e3d">TOTAL CARE TECH</h2><p style="margin:4px 0">Electrical & Plumbing Solutions<br><b>📞 9961606684</b></p></div><div style="margin-top:20px"><h3>Customer: ${b.c}</h3><p>Date: ${b.date}</p><div style="background:#f9f9f9;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:16px;border:1px solid #eee">${b.i}</div><hr><h2 style="text-align:right">Total: ₹${b.t}</h2></div><script>window.print()<\/script></body></html>`);w.document.close();}
-function shareB(i){let b=db.b[i];let txt=`*TOTAL CARE TECH* - Bill\nCustomer: ${b.c}\nDate: ${b.date}\n\n${b.i}\n\n*Total: ₹${b.t}*\nContact: 9961606684`;window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}
-function delc(i){if(confirm('Delete?')){db.c.splice(i,1);save();}}
-function delw(i){db.w.splice(i,1);save();}
-function delb(i){db.b.splice(i,1);save();}
-function exp(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db)]));a.download='totalcare_backup_'+Date.now()+'.json';a.click();}
-function imp(){let f=document.getElementById('impf').files[0];if(!f)return alert('File Select ചെയ്യുക');let r=new FileReader();r.onload=e=>{db=JSON.parse(e.target.result);save();alert('Restore Success!');};r.readAsText(f);}
-document.getElementById('wdate').valueAsDate=new Date();render();
+
+function openModule(modId) {
+  var cards = document.querySelectorAll('.card');
+  cards.forEach(card => card.classList.remove('active'));
+  var target = document.getElementById(modId);
+  if(target) target.classList.add('active');
+  renderAll();
+}
+
+function addWorkerFromDaily() {
+  var name = document.getElementById('new_w_name').value.trim();
+  if(!name) return alert('Enter worker name');
+  if(DB.workers.indexOf(name) !== -1) return alert('Worker already exists');
+  DB.workers.push(name);
+  document.getElementById('new_w_name').value = '';
+  saveData();
+  renderAll();
+}
+
+function toggleWorker(name) {
+  if(selectedWorkers[name]) {
+    delete selectedWorkers[name];
+  } else {
+    selectedWorkers[name] = { rate: 800, extra: 0 };
+  }
+  renderChecks();
+  renderWageInputs();
+}
+
+function updateWage(name, field, val) {
+  if(selectedWorkers[name]) {
+    selectedWorkers[name][field] = parseInt(val || 0);
+  }
+}
+
+function renderChecks() {
+  var area = document.getElementById('workerChecks');
+  if(!area) return;
+  area.innerHTML = '';
+  for(var i=0; i<DB.workers.length; i++) {
+    var w = DB.workers[i];
+    var sel = selectedWorkers[w] ? 'checked' : '';
+    area.innerHTML += '<label style="display:inline-block;margin:3px 8px;font-size:13px"><input type="checkbox" ' + sel + ' onchange="toggleWorker(\'' + w + '\')"> <b>' + w + '</b></label>';
+  }
+}
+
+function renderWageInputs() {
+  var container = document.getElementById('wageRows');
+  if(!container) return;
+  container.innerHTML = '';
+  for(var w in selectedWorkers) {
+    container.innerHTML += '<div style="background:#f0f8ff;border:1px solid #b8daff;padding:8px;border-radius:6px;margin-bottom:8px;font-size:12px">'
+      + '<b>👷 ' + w + '</b>'
+      + '<div style="display:flex;gap:5px;margin-top:4px">'
+      + '<input type="number" placeholder="Daily Wage" value="' + selectedWorkers[w].rate + '" oninput="updateWage(\'' + w + '\',\'rate\',this.value)" class="input" style="margin:0;padding:6px">'
+      + '<input type="number" placeholder="OT/Extra" value="' + selectedWorkers[w].extra + '" oninput="updateWage(\'' + w + '\',\'extra\',this.value)" class="input" style="margin:0;padding:6px">'
+      + '</div>'
+      + '</div>';
+  }
+}
+
+function saveDailyWork() {
+  var c = document.getElementById('d_cust').value.trim();
+  var p = document.getElementById('d_phone').value.trim();
+  var w = document.getElementById('d_work').value.trim();
+  var coll = parseInt(document.getElementById('d_coll').value || 0);
+
+  var wKeys = Object.keys(selectedWorkers);
+  if(!c || !w) return alert('Customer Name and Work Details required!');
+  if(wKeys.length === 0) return alert('Select at least one worker!');
+
+  var totalWage = 0;
+  var workerListText = [];
+  for(var k=0; k<wKeys.length; k++) {
+    var name = wKeys[k];
+    var earn = selectedWorkers[name].rate + selectedWorkers[name].extra;
+    totalWage += earn;
+    workerListText.push(name + ' (Rs ' + earn + ')');
+  }
+
+  DB.daily.unshift({ 
+    id: Date.now(), 
+    cust: c, 
+    work: w, 
+    amount: totalWage, 
+    coll: coll, 
+    workers: workerListText.join(', '), 
+    date: new Date().toLocaleDateString() 
+  });
+  
+  if(!DB.customers[c]) DB.customers[c] = { phone: p };
+  else if(p) DB.customers[c].phone = p;
+
+  document.getElementById('d_cust').value = '';
+  document.getElementById('d_phone').value = '';
+  document.getElementById('d_work').value = '';
+  document.getElementById('d_coll').value = '';
+  selectedWorkers = {};
+
+  saveData();
+  renderAll();
+  alert('Work Saved Successfully!');
+}
+
+function saveSubContract() {
+  var c = document.getElementById('s_cust').value.trim();
+  var cont = document.getElementById('s_cont').value.trim();
+  var w = document.getElementById('s_work').value.trim();
+  var total = parseInt(document.getElementById('s_total').value || 0);
+  var coll = parseInt(document.getElementById('s_coll').value || 0);
+
+  if(!c || !cont || !w || total <= 0) return alert('All fields required!');
+
+  DB.sub.unshift({ id: Date.now(), cust: c, contractor: cont, work: w, total: total, coll: coll, date: new Date().toLocaleDateString() });
+  if(!DB.customers[c]) DB.customers[c] = { phone: '' };
+
+  document.getElementById('s_cust').value = '';
+  document.getElementById('s_cont').value = '';
+  document.getElementById('s_work').value = '';
+  document.getElementById('s_total').value = '';
+  document.getElementById('s_coll').value = '';
+
+  saveData();
+  renderAll();
+  alert('Sub Contract Saved!');
+}
+
+function generateBill(cname) {
+  var info = DB.customers[cname] || {};
+  var html = '<div style="text-align:center;border-bottom:2px solid #000;padding-bottom:10px">'
+    + '<h2 style="margin:0">SR Electrical & Plumbing</h2>'
+    + '<p style="margin:2px;font-size:12px">TAX INVOICE / BILL OF SUPPLY</p>'
+    + '</div>'
+    + '<div style="margin:10px 0;font-size:12px">'
+    + '<b>Customer:</b> ' + cname + '<br>'
+    + '<b>Phone:</b> ' + (info.phone || 'N/A') + '<br>'
+    + '<b>Date:</b> ' + new Date().toLocaleDateString()
+    + '</div>'
+    + '<table class="bill-table">'
+    + '<tr><th>Work Item / Details</th><th>Amount</th></tr>';
+
+  var total = 0, received = 0;
+
+  for(var i=0; i<DB.daily.length; i++) {
+    if(DB.daily[i].cust === cname) {
+      html += '<tr><td>' + DB.daily[i].work + '<br><small style="color:#555">Workers: ' + DB.daily[i].workers + '</small></td><td style="text-align:right">Rs ' + DB.daily[i].amount + '</td></tr>';
+      total += DB.daily[i].amount;
+      received += (DB.daily[i].coll || 0);
+    }
+  }
+
+  for(var j=0; j<DB.sub.length; j++) {
+    if(DB.sub[j].cust === cname) {
+      html += '<tr><td>Sub Contract: ' + DB.sub[j].work + '</td><td style="text-align:right">Rs ' + DB.sub[j].total + '</td></tr>';
+      total += DB.sub[j].total;
+      received += (DB.sub[j].coll || 0);
+    }
+  }
+
+  var bal = total - received;
+
+  html += '</table>'
+    + '<div style="margin-top:15px;text-align:right;font-size:13px;line-height:1.6">'
+    + 'Sub Total: <b>Rs ' + total + '</b><br>'
+    + '<span style="color:green">Received Amount: <b>Rs ' + received + '</b></span><br>'
+    + '<hr style="margin:5px 0">'
+    + '<span style="color:' + (bal > 0 ? 'red' : 'green') + ';font-size:15px"><b>Balance Due: Rs ' + bal + '</b></span>'
+    + '</div>';
+
+  document.getElementById('billPrintArea').innerHTML = html;
+  openModule('mod_bill');
+}
+
+function renderAll() {
+  renderChecks();
+  renderWageInputs();
+
+  // Daily List
+  var dList = document.getElementById('dailyList');
+  if(dList) {
+    dList.innerHTML = '';
+    for(var i=0; i<DB.daily.length && i<5; i++) {
+      var d = DB.daily[i];
+      dList.innerHTML += '<div style="border:1px solid #eee;background:#fafafa;padding:8px;margin-bottom:5px;border-radius:6px;font-size:12px"><b>' + d.cust + '</b> - ' + d.work + '<br>Amount: Rs ' + d.amount + '</div>';
+    }
+  }
+
+  // Sub List
+  var sList = document.getElementById('subList');
+  if(sList) {
+    sList.innerHTML = '';
+    for(var j=0; j<DB.sub.length; j++) {
+      var s = DB.sub[j];
+      sList.innerHTML += '<div style="border:1px solid #eee;background:#fafafa;padding:8px;margin-bottom:5px;border-radius:6px;font-size:12px"><b>' + s.cust + '</b> (' + s.contractor + ')<br>Total: Rs ' + s.total + '</div>';
+    }
+  }
+
+  // Customer List
+  var cList = document.getElementById('customerList');
+  if(cList) {
+    cList.innerHTML = '';
+    var keys = Object.keys(DB.customers);
+    if(keys.length === 0) cList.innerHTML = '<p style="font-size:12px;color:#777">No customers available</p>';
+    for(var k=0; k<keys.length; k++) {
+      var name = keys[k];
+      cList.innerHTML += '<div style="border:1px solid #ddd;padding:10px;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">'
+        + '<div><b>👤 ' + name + '</b></div>'
+        + '<button onclick="generateBill(\'' + name + '\')" style="background:#0072ff;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer">🖨️ Print Bill</button>'
+        + '</div>';
+    }
+  }
+
+  // Workers
+  var wList = document.getElementById('workerMasterList');
+  if(wList) {
+    wList.innerHTML = '<b>All Active Workers:</b><br><br>';
+    for(var w=0; w<DB.workers.length; w++) {
+      wList.innerHTML += '<span class="worker-chip">👷 ' + DB.workers[w] + '</span>';
+    }
+  }
+
+  // Finance
+  var fBox = document.getElementById('finSummary');
+  if(fBox) {
+    var totInc = 0, totColl = 0;
+    for(var a=0; a<DB.daily.length; a++) { totInc += DB.daily[a].amount; totColl += (DB.daily[a].coll || 0); }
+    for(var b=0; b<DB.sub.length; b++) { totInc += DB.sub[b].total; totColl += (DB.sub[b].coll || 0); }
+    fBox.innerHTML = 'Total Works Done: <b>Rs ' + totInc + '</b><br>'
+      + 'Total Cash Received: <b>Rs ' + totColl + '</b><br>'
+      + 'Pending Balance Due: <b style="color:red">Rs ' + (totInc - totColl) + '</b>';
+  }
+}
+
+renderAll();
 </script>
 </body>
 </html>
